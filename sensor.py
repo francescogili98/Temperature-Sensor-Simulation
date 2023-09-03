@@ -16,6 +16,6 @@ for i in range(10):
         data_to_send[column] = data[column].iloc[i]
 
     r = post(f'{base_url}/sensors/{sensor}', data=data_to_send)
-    time.sleep(1)
+    time.sleep(3)
 
 print('done')

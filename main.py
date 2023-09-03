@@ -3,6 +3,11 @@ import json
 from google.cloud import firestore
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
 from secret import secret_key
+import datetime
+
+start_time = {}
+end_time = {}
+open = {}
 
 class User(UserMixin):
     def __init__(self, username):
@@ -18,6 +23,56 @@ local = True
 login = LoginManager(app)
 login.login_view = '/static/login.html'
 
+def timeDuration(timeS, timeF):
+    date, time = timeS[0], timeS[1]
+    yearA = int(date.split('-')[2].strip())
+    if date.split('-')[1].strip().startswith('0'):
+        monthA = int(date.split('-')[1].strip()[1])
+    else:
+        monthA = int(date.split('-')[1].strip())
+    if date.split('-')[0].strip().startswith('0'):
+        dayA = int(date.split('-')[0].strip()[1])
+    else:
+        dayA = int(date.split('-')[0].strip())
+    if time.split(':')[0].strip().startswith('0'):
+        hourA = int(time.split(':')[0].strip()[1])
+
+    else:
+        hourA = int(time.split(':')[0].strip())
+    if time.split(':')[1].strip().startswith('0'):
+        minuteA = int(time.split(':')[1].strip()[1])
+    else:
+        minuteA = int(time.split(':')[1].strip())
+
+    date, time = timeF[0], timeF[1]
+    yearB = int(date.split('-')[2].strip())
+    if date.split('-')[1].strip().startswith('0'):
+        monthB = int(date.split('-')[1].strip()[1])
+    else:
+        monthB = int(date.split('-')[1].strip())
+    if date.split('-')[0].strip().startswith('0'):
+        dayB = int(date.split('-')[0].strip()[1])
+    else:
+        dayB = int(date.split('-')[0].strip())
+    if time.split(':')[0].strip().startswith('0'):
+        hourB = int(time.split(':')[0].strip()[1])
+    else:
+        hourB = int(time.split(':')[0].strip())
+    if time.split(':')[1].strip().startswith('0'):
+        minuteB = int(time.split(':')[1].strip()[1])
+    else:
+        minuteB = int(time.split(':')[1].strip())
+
+    # print(yearA, monthA, dayA, hourA, minuteA)
+    # print(yearB, monthB, dayB, hourB, minuteB)
+
+    a = datetime.datetime(yearA, monthA, dayA, hourA, minuteA, 10)
+
+    b = datetime.datetime(yearB, monthB, dayB, hourB, minuteB, 10)
+
+    c = b - a
+
+    return c.total_seconds() / 60
 
 @login.user_loader
 def load_user(username):
@@ -41,6 +96,10 @@ def main():
 # all'interno dell'url c'è un parametro
 @app.route('/sensors/<s>', methods=['POST'])
 def add_data(s):
+    global open
+    if s not in open:
+        open[s] = False
+    opening_duration = 0
     val = float(request.values['Temp 1'])
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     doc_ref = db.collection('sensors').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
@@ -52,12 +111,19 @@ def add_data(s):
     else: #altrimenti crei il dizionario associato con chiave values e valore lista...
         doc_ref.set({'values':[val]})
 
-    if float(val) > -20: #oppure porte aperte troppo a lungo
-        print('okkk')
-        db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+    if request.values['Door 1'] == 'Open' and open[s] == False:
+        start_time[s] = [request.values['Date'], request.values['Time']]
+        open[s] = True
+    elif request.values['Door 1'] == 'Closed' and open[s] == True:
+        print(start_time[s])
+        end_time[s] = [request.values['Date'], request.values['Time']]
+        opening_duration = timeDuration(start_time[s], end_time[s])
+
+    if float(val) > -17 or opening_duration > 20: #oppure porte aperte troppo a lungo
+        print('ALARM')
         doc_ref_2 = db.collection('alarms').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
         entity_2 = doc_ref_2.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
-        val_2 = request.values['Date']
+        val_2 = request.values['Date']+str(val)
         if entity_2.exists and 'values' in entity_2.to_dict():  # se al sensore s corrispondono già valori allora aggiungi ad essi val
             v_2 = entity_2.to_dict()['values']  # copio i valori
             v_2.append(val_2)  # aggiungo val alla copia dei valori
@@ -138,3 +204,4 @@ def adduser():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
+
