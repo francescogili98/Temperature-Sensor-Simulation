@@ -1,10 +1,81 @@
+<!DOCTYPE html>
 <html>
+<head>
+    <title>Accesso Utente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+    </style>
+</head>
 <body>
-<form action="/login" method="post">
-    username <input type="text" name="u"><br>
-    password <input type="password" name="p"><br>
-    next <input type="text" name="next"><br>
-    <input type="submit">
-</form>
+    <div class="container">
+        <h1>Accesso Utente</h1>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="u">Username</label>
+                <input type="text" name="u" id="u" placeholder="Inserisci il tuo username">
+            </div>
+            <div class="form-group">
+                <label for="p">Password</label>
+                <input type="password" name="p" id="p" placeholder="Inserisci la tua password">
+            </div>
+            <div class="form-group">
+                <label for="next">Next</label>
+                <input type="text" name="next" id="next" placeholder="Inserisci il campo 'next'">
+            </div>
+            <input type="submit" value="Accedi">
+        </form>
+    </div>
 </body>
 </html>
