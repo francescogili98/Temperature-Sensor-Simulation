@@ -100,30 +100,41 @@ def add_data(s):
     if s not in open:
         open[s] = False
     opening_duration = 0
+
     val = float(request.values['Temp 1'])
+    print('VALLL,',val)
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     doc_ref = db.collection('sensors').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
     entity = doc_ref.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
     if entity.exists and 'values' in entity.to_dict(): #se al sensore s corrispondono già valori allora aggiungi ad essi val
         v = entity.to_dict()['values'] #copio i valori
         v.append(val) #aggiungo val alla copia dei valori
-        doc_ref.update({'values':v}) #il nuovo value è la copia aggiornata
+        doc_ref.update({'values': v}) #il nuovo value è la copia aggiornata
     else: #altrimenti crei il dizionario associato con chiave values e valore lista...
-        doc_ref.set({'values':[val]})
+        doc_ref.set({'values': [val]})
 
     if request.values['Door 1'] == 'Open' and open[s] == False:
         start_time[s] = [request.values['Date'], request.values['Time']]
         open[s] = True
+        print('start')
     elif request.values['Door 1'] == 'Closed' and open[s] == True:
         print(start_time[s])
         end_time[s] = [request.values['Date'], request.values['Time']]
         opening_duration = timeDuration(start_time[s], end_time[s])
+        print('opening ', opening_duration)
+        open[s] = False
+        print('end')
 
-    if float(val) > -17 or opening_duration > 20: #oppure porte aperte troppo a lungo
+    if float(val) > -15 or opening_duration > 20: #oppure porte aperte troppo a lungo
         print('ALARM')
+        if float(val) > -15:
+            print(val)
+        elif opening_duration > 20:
+            print(opening_duration)
         doc_ref_2 = db.collection('alarms').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
         entity_2 = doc_ref_2.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
-        val_2 = request.values['Date']+str(val)
+        val_2 = request.values['Date']+' '+request.values['Time']+' '+str(val)
+        print(val_2)
         if entity_2.exists and 'values' in entity_2.to_dict():  # se al sensore s corrispondono già valori allora aggiungi ad essi val
             v_2 = entity_2.to_dict()['values']  # copio i valori
             v_2.append(val_2)  # aggiungo val alla copia dei valori
@@ -155,8 +166,8 @@ def graph_data(s):
         t = 0
         for x in entity.to_dict()['values']:
             d.append([t,x])
-            t+=1
-        return render_template('graph.html',sensor=s,data=json.dumps(d))
+            t += 1
+        return render_template('graph.html', sensor=s, data=json.dumps(d))
         # gli passo una pagina html
     else:
         return redirect(url_for('static', filename='sensor404.html'))
