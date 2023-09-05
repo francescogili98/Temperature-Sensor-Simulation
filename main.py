@@ -16,12 +16,14 @@ class User(UserMixin):
         self.username = username
         self.par = {}
 
-app = Flask(__name__)
+app = Flask(__name__) # creo applicazione flask
 app.config['SECRET_KEY'] = secret_key
 local = True
 
 login = LoginManager(app)
-login.login_view = '/static/login.html'
+# penso che quando c'è scritto login required, automaticamente rimanda alla form indicata qui sotto e quella fa richiesta http
+# post alla funzione login giù
+login.login_view = '/static/login.html' # se l'applicazione avrà bisogno di rimandare alla pagina di login, la pagina è qui
 
 def timeDuration(timeS, timeF):
     date, time = timeS[0], timeS[1]
@@ -74,7 +76,7 @@ def timeDuration(timeS, timeF):
 
     return c.total_seconds() / 60
 
-@login.user_loader
+@login.user_loader # lo carica nel database
 def load_user(username):
     # client per accedere a firestore, il file json è il service account per autenticarsi, l'ho generato da googleCloud
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
@@ -168,16 +170,19 @@ def graph_data(s):
             d.append([t,x])
             t += 1
         return render_template('graph.html', sensor=s, data=json.dumps(d))
-        # gli passo una pagina html
+        # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
+        # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
+        # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
     else:
         return redirect(url_for('static', filename='sensor404.html'))
+        # ridirige a url con pagina static
 
 @app.route('/login', methods=['POST'])
 def login():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated: #current_user è una variabile di flask_login, non l'ho creata io, mi dice info sull'utente attuale
         return redirect(url_for('/main'))
-    username = request.values['u']
-    password = request.values['p']
+    username = request.values['u'] #fornito dalla form html
+    password = request.values['p'] #fornito dalla form html
 
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     user = db.collection('utenti').document(username).get()
