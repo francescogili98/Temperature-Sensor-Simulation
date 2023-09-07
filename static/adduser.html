@@ -1,41 +1,38 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <title>Registrazione Utente</title>
     <style>
-        body {
+        h1 {
             font-family: Arial, sans-serif;
-            background-color: #ffffff; /* Colore di sfondo */
-            text-align: center; /* Allineamento testo al centro */
-            margin: 0; /* Rimuove i margini predefiniti */
-            padding: 0; /* Rimuove il padding predefinito */
+            color: #333;
+            margin-left: 20px;
         }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
+        form {
+            width: 400px;
+            margin: 20px;
             padding: 20px;
-            background-color: #f2f2f2; /* Colore di sfondo del contenitore */
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
+            background-color: #f9f9f9;
         }
 
         label {
             display: block;
-            font-weight: bold;
+            margin-bottom: 5px;
         }
 
         input[type="text"],
-        input[type="password"] {
-            width: 100%;
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 80%;
             padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 3px;
+            border-radius: 5px;
+        }
+
+        select {
+            margin-right: 5px;
         }
 
         input[type="submit"] {
@@ -43,7 +40,7 @@
             color: #fff;
             padding: 10px 20px;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
@@ -51,21 +48,33 @@
             background-color: #0056b3;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Registrazione Utente</h1>
+    <body>
+        <h1>Create an account</h1>
         <form action="/adduser" method="post">
-            <div class="form-group">
-                <label for="u">username</label>
-                <input type="text" name="u" id="u">
-            </div>
-            <div class="form-group">
-                <label for="p">password</label>
-                <input type="password" name="p" id="p">
-            </div>
-            <input type="submit" value="Invia">
+            <label for="firstname">First name:</label>
+            <input type="text" name="firstname" required>
+            <br>
+            <label for="lastname">Last name:</label>
+            <input type="text" name="lastname" required>
+            <br>
+            <label for="country">Country:</label>
+            <select name="country" id="country">
+                <option>Select an option</option>
+                <option value="australia">Australia</option>
+                <option value="italy">Italy</option>
+                <option value="usa">USA</option>
+            </select>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+            <br>
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+            <br>
+            <input type="submit">
         </form>
-    </div>
-</body>
+    </body>
 </html>

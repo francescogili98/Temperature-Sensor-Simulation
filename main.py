@@ -103,7 +103,8 @@ def add_data(s):
         open[s] = False
     opening_duration = 0
 
-    val = float(request.values['Temp 1'])
+    val = {'temp':float(request.values['Temp 1']), 'lat': float(request.values['Lat/Long'].split(',')[0]), 'long':float(request.values['Lat/Long'].split(',')[1]),
+           'Date': request.values['Date'], 'Time': request.values['Time']}
     print('VALLL,',val)
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     doc_ref = db.collection('sensors').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
@@ -167,8 +168,9 @@ def graph_data(s):
         d.append(['Number', s])
         t = 0
         for x in entity.to_dict()['values']:
-            d.append([t,x])
+            d.append([t,x['temp']])
             t += 1
+            print(x['temp'])
         return render_template('graph.html', sensor=s, data=json.dumps(d))
         # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
         # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
@@ -177,12 +179,41 @@ def graph_data(s):
         return redirect(url_for('static', filename='sensor404.html'))
         # ridirige a url con pagina static
 
+@app.route('/graphGeo/<s>',methods=['GET'])
+@login_required
+def graphGeo_data(s):
+    # sono sempre i due possibili modi per accedere a firestore da locale o da remoto
+    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+    entity = db.collection('sensors').document(s).get() #con get accedi veramente all'entità, non con doc ref
+    if entity.exists:
+        '''
+        d = []
+        d.append(['Number', s])
+        t = 0
+        for x in entity.to_dict()['values']:
+            d.append([t,x])
+            t += 1
+            
+        '''
+        d = {'lat': 51.5,'long': -0.09}
+        lat = 51.5
+        long = -0.09
+        print('ciao')
+        return render_template('geo.html', sensor=s, lat=lat, long=long)#data=json.dumps(d))
+        # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
+        # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
+        # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
+    else:
+        return redirect(url_for('static', filename='sensor404.html'))
+        # ridirige a url con pagina static
+
+
 @app.route('/login', methods=['POST'])
 def login():
     if current_user.is_authenticated: #current_user è una variabile di flask_login, non l'ho creata io, mi dice info sull'utente attuale
         return redirect(url_for('/main'))
-    username = request.values['u'] #fornito dalla form html
-    password = request.values['p'] #fornito dalla form html
+    username = request.values['username'] #fornito dalla form html
+    password = request.values['password'] #fornito dalla form html
 
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     user = db.collection('utenti').document(username).get()
@@ -208,12 +239,16 @@ def adduser():
         if request.method == 'GET':
             return redirect('/static/adduser.html')
         else:
-            username = request.values['u']
-            password = request.values['p']
+            username = request.values['username']
+            password = request.values['password']
+            country = request.values['country']
+            email = request.values['email']
+            firstname = request.values['firstname']
+            lastname = request.values['lastname']
             db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
             user = db.collection('utenti').document(username)
-            user.set({'username':username, 'password':password})
-            return 'ok'
+            user.set({'username': username, 'password': password, 'email': email, 'firstname': firstname, 'lastname': lastname, 'country':country})
+            return 'salvataggio effettuato'
     else:
         return redirect('/')
 

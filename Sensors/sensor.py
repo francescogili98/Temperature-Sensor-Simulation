@@ -5,7 +5,7 @@ import pandas as pd
 base_url = 'http://localhost:80'
 
 sensor = 'MS469'
-data = pd.read_excel('Data/Journey_MS469_1.xlsx', header=12)
+data = pd.read_excel('/Users/gili98/Documents/Temperature-Sensor-Simulation/Data/Journey_MS469_1.xlsx', header=12)
 
 for i in range(27):
     print(sensor, ' invio....')
