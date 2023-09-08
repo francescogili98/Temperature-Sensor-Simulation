@@ -5,12 +5,35 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <style>
+        /* Stile per la mappa */
+        #mappa {
+            position: absolute;
+            top: 510px;
+            right: 90px;
+            width: 300px;
+            height: 200px;
+        }
+
+        /* Stile per l'intestazione */
+        #intestazione {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Intestazione -->
+    <div id="intestazione">
+        SensTemp Dashboard
+    </div>
+
+    <!-- Grafico delle temperature -->
     <div id="grafico-temperatura"></div>
 
-    <!-- Aggiungi un elemento per il secondo grafico (localizzazione) -->
-    <div id="mappa" style="width: 600px; height: 400px;"></div>
+    <!-- Mappa -->
+    <div id="mappa"></div>
 
     <script>
         var sensor = "{{ sensor }}";
@@ -40,12 +63,14 @@
         var map = L.map('mappa').setView([lat, long], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.marker([lat, long]).addTo(map).bindPopup('Popup. Easily customizable.');
+
         setTimeout(function(){
-        window.location.reload();
-      }, 5000);
+            window.location.reload();
+        }, 5000);
     </script>
 </body>
 </html>
+
 
 
 
