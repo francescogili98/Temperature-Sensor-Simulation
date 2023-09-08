@@ -1,61 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grafico delle temperature</title>
+    <!-- ... Altri tag meta e link ... -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <!-- Aggiungi un elemento canvas per il grafico -->
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <div id="grafico-temperatura"></div>
 
     <script>
-        // Recupera i dati passati dal template
         var sensor = "{{ sensor }}";
-        var temperatureData = JSON.parse('{{ temp|safe }}');
-        var orariData = JSON.parse('{{ orari|safe }}');
+        var temperatureData = {{ temperatureData|safe }};
+        var orariData = {{ orariData|safe }};
 
-        // Ottieni il riferimento al canvas
-        var canvas = document.getElementById('myChart');
-        var ctx = canvas.getContext('2d');
+        var data = [{
+            x: orariData,
+            y: temperatureData,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Temperatura'
+        }];
 
-        // Imposta i margini del grafico
-        var margin = { top: 20, right: 30, bottom: 30, left: 40 };
-        var width = canvas.width - margin.left - margin.right;
-        var height = canvas.height - margin.top - margin.bottom;
-
-        // Crea una scala per gli orari
-        var xScale = function (i) {
-            return margin.left + (i * (width / (orariData.length - 1)));
+        var layout = {
+            title: 'Andamento della Temperatura - ' + sensor,
+            xaxis: { title: 'Orario' },
+            yaxis: { title: 'Temperatura (°C)' }
         };
 
-        // Crea una scala per le temperature
-        var yScale = function (temp) {
-            return margin.top + (height - ((temp - Math.min(...temperatureData)) / (Math.max(...temperatureData) - Math.min(...temperatureData))) * height);
-        };
-
-        // Disegna gli assi
-        ctx.beginPath();
-        ctx.moveTo(margin.left, margin.top);
-        ctx.lineTo(margin.left, canvas.height - margin.bottom);
-        ctx.lineTo(canvas.width - margin.right, canvas.height - margin.bottom);
-        ctx.stroke();
-
-        // Disegna i punti del grafico
-        ctx.beginPath();
-        ctx.fillStyle = 'blue';
-        for (var i = 0; i < orariData.length; i++) {
-            var x = xScale(i);
-            var y = yScale(temperatureData[i]);
-            ctx.arc(x, y, 2, 0, 2 * Math.PI);
-        }
-        ctx.fill();
-        ctx.closePath();
-
-        // Aggiungi etichetta al grafico
-        ctx.font = '14px Arial';
-        ctx.fillText('Grafico delle temperature - ' + sensor, 20, 20);
+        Plotly.newPlot('grafico-temperatura', data, layout);
     </script>
 </body>
 </html>
+
+
+
 

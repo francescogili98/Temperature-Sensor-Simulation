@@ -9,12 +9,15 @@ data = pd.read_excel('/Users/gili98/Documents/Temperature-Sensor-Simulation/Data
 
 for i in range(27):
     print(sensor, ' invio....')
+    print(i)
+
 
     data_to_send = {}
     for column in data.columns:
         data_to_send[column] = data[column].iloc[i]
+    print(data_to_send)
 
     r = post(f'{base_url}/sensors/{sensor}', data=data_to_send)
-    time.sleep(5)
+    time.sleep(2)
 
 print('done')

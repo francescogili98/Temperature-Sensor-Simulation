@@ -128,15 +128,15 @@ def add_data(s):
         open[s] = False
         print('end')
 
-    if float(val) > -15 or opening_duration > 20: #oppure porte aperte troppo a lungo
+    if float(val['temp']) > -15 or opening_duration > 20: #oppure porte aperte troppo a lungo
         print('ALARM')
-        if float(val) > -15:
-            print(val)
+        if float(val['temp']) > -15:
+            print(val['temp'])
         elif opening_duration > 20:
             print(opening_duration)
         doc_ref_2 = db.collection('alarms').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
         entity_2 = doc_ref_2.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
-        val_2 = request.values['Date']+' '+request.values['Time']+' '+str(val)
+        val_2 = request.values['Date']+' '+request.values['Time']+' '+str(val['temp'])
         print(val_2)
         if entity_2.exists and 'values' in entity_2.to_dict():  # se al sensore s corrispondono già valori allora aggiungi ad essi val
             v_2 = entity_2.to_dict()['values']  # copio i valori
@@ -187,21 +187,23 @@ def graphh_data(s):
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     entity = db.collection('sensors').document(s).get() #con get accedi veramente all'entità, non con doc ref
     if entity.exists:
-        t = []
-        t.append(['Number', s])
-        #d = []
+        temperatureData = []
+        #t.append(['Number', s])
+        orariData = []
         #d.append(['Number', s])
         #t = 0
         f = 0
         for x in entity.to_dict()['values']:
 
-            t.append([x['Time'], x['temp']])
-            f += 1
-            #d.append(x['Time'])
+            temperatureData.append(x['temp'])
+            #f += 1
+            orariData.append(x['Time'])
             #print(x['temp'])
-        #print(len(d))
-        #print(len(t))
-        return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
+        print(temperatureData)
+        print(orariData)
+        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperatureData), orariData=json.dumps(orariData))
+
+        #return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
         # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
         # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
         # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
