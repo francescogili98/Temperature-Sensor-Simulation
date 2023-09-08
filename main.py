@@ -168,7 +168,7 @@ def graph_data(s):
         d.append(['Number', s])
         t = 0
         for x in entity.to_dict()['values']:
-            d.append([t,x['temp']])
+            d.append([str(t), x['temp']])
             t += 1
             print(x['temp'])
         return render_template('graph.html', sensor=s, data=json.dumps(d))
@@ -178,6 +178,37 @@ def graph_data(s):
     else:
         return redirect(url_for('static', filename='sensor404.html'))
         # ridirige a url con pagina static
+
+
+@app.route('/graphh/<s>',methods=['GET'])
+@login_required
+def graphh_data(s):
+    # sono sempre i due possibili modi per accedere a firestore da locale o da remoto
+    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+    entity = db.collection('sensors').document(s).get() #con get accedi veramente all'entità, non con doc ref
+    if entity.exists:
+        t = []
+        t.append(['Number', s])
+        #d = []
+        #d.append(['Number', s])
+        #t = 0
+        f = 0
+        for x in entity.to_dict()['values']:
+
+            t.append([x['Time'], x['temp']])
+            f += 1
+            #d.append(x['Time'])
+            #print(x['temp'])
+        #print(len(d))
+        #print(len(t))
+        return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
+        # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
+        # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
+        # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
+    else:
+        return redirect(url_for('static', filename='sensor404.html'))
+        # ridirige a url con pagina static
+
 
 @app.route('/graphGeo/<s>',methods=['GET'])
 @login_required
