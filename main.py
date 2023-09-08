@@ -201,7 +201,9 @@ def graphh_data(s):
             #print(x['temp'])
         print(temperatureData)
         print(orariData)
-        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperatureData), orariData=json.dumps(orariData))
+        lat = 51.5
+        long = -0.09
+        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperatureData), orariData=json.dumps(orariData), lat=lat, long=long)
 
         #return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
         # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)

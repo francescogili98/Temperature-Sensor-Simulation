@@ -3,15 +3,21 @@
 <head>
     <!-- ... Altri tag meta e link ... -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
 </head>
 <body>
     <div id="grafico-temperatura"></div>
+
+    <!-- Aggiungi un elemento per il secondo grafico (localizzazione) -->
+    <div id="mappa" style="width: 600px; height: 400px;"></div>
 
     <script>
         var sensor = "{{ sensor }}";
         var temperatureData = {{ temperatureData|safe }};
         var orariData = {{ orariData|safe }};
 
+        // Codice per il primo grafico (andamento della temperatura) qui...
         var data = [{
             x: orariData,
             y: temperatureData,
@@ -27,9 +33,20 @@
         };
 
         Plotly.newPlot('grafico-temperatura', data, layout);
+
+        // Codice per il secondo grafico (localizzazione) qui...
+        var lat = {{ lat }};
+        var long = {{ long }};
+        var map = L.map('mappa').setView([lat, long], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([lat, long]).addTo(map).bindPopup('Popup. Easily customizable.');
+        setTimeout(function(){
+        window.location.reload();
+      }, 5000);
     </script>
 </body>
 </html>
+
 
 
 
