@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Alarms</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Temperature alarms</h2>
+
+    <table id="alarmTable">
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>Temp.Value</th>
+            <th>Alarm mode</th>
+        </tr>
+    </table>
+
+    <script>
+        // Dati da visualizzare nella tabella (puoi passare una lista JSON qui)
+        var data = {{ temperatureData | safe }};
+
+        // Ottieni il riferimento alla tabella
+        var table = document.getElementById("alarmTable");
+
+        // Loop attraverso i dati e crea righe della tabella
+        for (var i = 0; i < data.length; i++) {
+            var row = table.insertRow(-1); // Aggiungi una riga alla fine della tabella
+            var rowData = data[i];
+
+            // Aggiungi le celle alla riga
+            var dateCell = row.insertCell(0);
+            dateCell.innerHTML = rowData.Date;
+
+            var timeCell = row.insertCell(1);
+            timeCell.innerHTML = rowData.Time;
+
+            var locationCell = row.insertCell(2);
+            locationCell.innerHTML = rowData.Location;
+
+            var tempValueCell = row.insertCell(3);
+            tempValueCell.innerHTML = rowData.TempValue;
+
+            var alarmModeCell = row.insertCell(4);
+            alarmModeCell.innerHTML = rowData.AlarmMode;
+        }
+    </script>
+</body>
+</html>
+
+

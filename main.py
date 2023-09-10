@@ -16,6 +16,7 @@ class User(UserMixin):
         self.username = username
         self.par = {}
 
+
 app = Flask(__name__) # creo applicazione flask
 app.config['SECRET_KEY'] = secret_key
 local = True
@@ -24,6 +25,7 @@ login = LoginManager(app)
 # penso che quando c'è scritto login required, automaticamente rimanda alla form indicata qui sotto e quella fa richiesta http
 # post alla funzione login giù
 login.login_view = '/static/login.html' # se l'applicazione avrà bisogno di rimandare alla pagina di login, la pagina è qui
+
 
 def timeDuration(timeS, timeF):
     date, time = timeS[0], timeS[1]
@@ -76,6 +78,7 @@ def timeDuration(timeS, timeF):
 
     return c.total_seconds() / 60
 
+
 @login.user_loader # lo carica nel database
 def load_user(username):
     # client per accedere a firestore, il file json è il service account per autenticarsi, l'ho generato da googleCloud
@@ -84,6 +87,7 @@ def load_user(username):
     if user.exists:
         return User(username)
     return None
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/main', methods=['GET', 'POST'])
@@ -95,6 +99,7 @@ def main():
         s.append(doc.id)
     return json.dumps(s), 200 #ritorno un json con la lista s
 
+
 # all'interno dell'url c'è un parametro
 @app.route('/sensors/<s>', methods=['POST'])
 def add_data(s):
@@ -103,9 +108,9 @@ def add_data(s):
         open[s] = False
     opening_duration = 0
 
-    val = {'temp':float(request.values['Temp 1']), 'lat': float(request.values['Lat/Long'].split(',')[0]), 'long':float(request.values['Lat/Long'].split(',')[1]),
+    val = {'temp': float(request.values['Temp 1']), 'lat': float(request.values['Lat/Long'].split(',')[0]), 'long':float(request.values['Lat/Long'].split(',')[1]),
            'Date': request.values['Date'], 'Time': request.values['Time']}
-    print('VALLL,',val)
+    print('misurazione,',val)
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     doc_ref = db.collection('sensors').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
     entity = doc_ref.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
@@ -129,14 +134,16 @@ def add_data(s):
         print('end')
 
     if float(val['temp']) > -15 or opening_duration > 20: #oppure porte aperte troppo a lungo
+        temp_violation = True
         print('ALARM')
         if float(val['temp']) > -15:
             print(val['temp'])
         elif opening_duration > 20:
+            temp_violation = False
             print(opening_duration)
         doc_ref_2 = db.collection('alarms').document(s) #mi fornisce riferimento all'entità documento oppure se non c'era me la crea
         entity_2 = doc_ref_2.get() #get mi restituisce l'entità vera e propria dandogli il riferimento
-        val_2 = request.values['Date']+' '+request.values['Time']+' '+str(val['temp'])
+        val_2 = {'date': request.values['Date'], 'time': request.values['Time'], 'temp': str(val['temp']), 'tempLimit': temp_violation, 'location':request.values['Location']}
         print(val_2)
         if entity_2.exists and 'values' in entity_2.to_dict():  # se al sensore s corrispondono già valori allora aggiungi ad essi val
             v_2 = entity_2.to_dict()['values']  # copio i valori
@@ -203,7 +210,21 @@ def graphh_data(s):
         print(orariData)
         lat = 51.5
         long = -0.09
-        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperatureData), orariData=json.dumps(orariData), lat=lat, long=long)
+
+        entity = db.collection('alarms').document(s).get()  # con get accedi veramente all'entità, non con doc ref
+        if entity.exists:
+            AlarmsData = []
+            # t.append(['Number', s])
+            #orariData = []
+            # d.append(['Number', s])
+            # t = 0
+            #f = 0
+            for x in entity.to_dict()['values']:
+                AlarmsData.append(
+                    {'Date': x['date'], 'Time': x['time'], 'Location': x['location'], 'AlarmMode': x['tempLimit'],
+                     'TempValue': 30})
+
+        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperatureData), orariData=json.dumps(orariData), lat=lat, long=long, AlarmsData = json.dumps(AlarmsData))
 
         #return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
         # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
@@ -212,6 +233,39 @@ def graphh_data(s):
     else:
         return redirect(url_for('static', filename='sensor404.html'))
         # ridirige a url con pagina static
+
+
+@app.route('/alarms/<s>',methods=['GET'])
+@login_required
+def alarm_data(s):
+    # sono sempre i due possibili modi per accedere a firestore da locale o da remoto
+    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+    entity = db.collection('alarms').document(s).get() #con get accedi veramente all'entità, non con doc ref
+    if entity.exists:
+        temperatureData = []
+        #t.append(['Number', s])
+        orariData = []
+        #d.append(['Number', s])
+        #t = 0
+        f = 0
+        for x in entity.to_dict()['values']:
+
+            temperatureData.append({'Date': x['date'], 'Time': x['time'], 'Location': x['location'], 'AlarmMode': x['tempLimit'], 'TempValue':30})
+            #f += 1
+            #orariData.append(x['Time'])
+            #print(x['temp'])
+        print(temperatureData)
+        #print(orariData)
+        #lat = 51.5
+        #long = -0.09
+        return render_template('alarms.html', sensor=s, temperatureData=json.dumps(temperatureData))
+
+        #return render_template('graph.html', sensor=s, data=json.dumps(t))#temp=json.dumps(t), orari=json.dumps(d))
+        # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
+        # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
+        # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
+    else:
+        return redirect(url_for('static', filename='sensor404.html'))
 
 
 @app.route('/graphGeo/<s>',methods=['GET'])
