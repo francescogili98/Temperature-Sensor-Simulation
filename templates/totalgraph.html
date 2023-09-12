@@ -1,111 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- ... Altri tag meta e link ... -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TempSens dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        /* Stile per la mappa */
-        #mappa {
-            position: absolute;
-            top: 510px;
-            right: 90px;
-            width: 300px;
-            height: 200px;
+        @import url("https://fonts.googleapis.com/css2?family=Sriracha&display=swap");
+
+        body {
+            margin: 0;
+            box-sizing: border-box;
         }
 
-        /* Stile per l'intestazione */
-        #intestazione {
-            text-align: center;
-            font-size: 24px;
+        /* CSS for header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+
+        .header .logo {
+            font-size: 25px;
+            font-family: "Sriracha", cursive;
+            color: #000;
+            text-decoration: none;
+            margin-left: 30px;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #f5f5f5;
+            margin-right: 20px;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #000;
+            padding: 35px 20px;
+        }
+
+        /* CSS for footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #302f49;
+            padding: 20px 80px; /* Riduci il padding del footer */
+            margin-top: 20px; /* Aggiungi spazio tra la tabella e il footer */
+        }
+
+
+        .footer .copy {
+            color: #fff;
+        }
+
+        .bottom-links {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 40px 0;
+        }
+
+        .bottom-links .links {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .bottom-links .links span {
+            font-size: 20px;
+            color: #fff;
+            text-transform: uppercase;
+            margin: 10px 0;
+        }
+
+        .bottom-links .links a {
+            text-decoration: none;
+            color: #a1a1a1;
+            padding: 10px 20px;
+        }
+
+        /* CSS for the map */
+        #map {
+            max-width: 1150px;
+            width: 105%;
+            height: 500px;
+            margin: 0 auto;
+        }
+
+        /* CSS for the temperature graph */
+        #grafico-temperatura {
+            width: 90%;
+            height: 500px;
             margin-top: 20px;
+            margin: 0 auto;
         }
 
-        /* Stile per la tabella */
+        /* CSS for the table */
+        #tabella-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+
         #tabella {
-            position: absolute;
-            bottom: 180px;
-            left: 80px;
-            border-collapse: collapse; /* Aggiungi bordi tra le celle */
-            width: 60%; /* Imposta la larghezza della tabella */
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
         }
 
         #tabella th,
         #tabella td {
-            border: 1px solid #ddd; /* Aggiungi bordi alle celle */
-            padding: 8px; /* Aggiungi spazio intorno ai contenuti delle celle */
-            text-align: left; /* Allinea il testo a sinistra nelle celle */
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
 
-        /* Aggiungi uno sfondo alternato alle righe della tabella */
         #tabella tr:nth-child(even) {
             background-color: #f2f2f2;
         }
 
-        /* Allinea l'intestazione della tabella al centro e aggiungi sfondo */
         #tabella th {
-            background-color: #4CAF50;
+            background-color: #0074b9;
             color: white;
             text-align: center;
         }
     </style>
 </head>
+
 <body>
-    <!-- Intestazione -->
-    <div id="intestazione">
-        SensTemp Dashboard
-    </div>
-
-    <!-- Grafico delle temperature -->
+    <header class="header">
+        <a href="#" class="logo">TempSens</a>
+        <nav class="nav-items">
+            <a href="#">Login</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <!-- Temperature graph -->
     <div id="grafico-temperatura"></div>
+    <!-- Geographical map -->
+    <div id="map"></div>
+    <!-- Table -->
+    <div id="tabella-container">
+        <table id="tabella">
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Temp value °C</th>
+                <th>Opening time</th>
+                <th>Fault mode</th>
+            </tr>
+        </table>
+    </div>
+    <footer class="footer">
+        <div class="copy">© 2023 TempSens Solutions</div>
+        <div class="bottom-links">
+            <div class="links">
+                <span>More Info</span>
+                <a href="#">Login</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="links">
+                <span>Social Links</span>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Mappa -->
-    <div id="mappa"></div>
-
-    <!-- Tabella -->
-    <table id="tabella">
-        <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Location</th>
-            <th>Temp.Value</th>
-            <th>Alarm mode</th>
-        </tr>
-        <!-- Qui verranno aggiunte dinamicamente le righe della tabella -->
-    </table>
-
+    <!-- js code -->
     <script>
+        // Assicurati di avere la libreria Leaflet JavaScript inclusa
         var sensor = "{{ sensor }}";
         var temperatureData = {{ temperatureData|safe }};
         var orariData = {{ orariData|safe }};
-        var AlarmsData = {{ AlarmsData|safe }}; // La variabile AlarmsData contiene i dati per la tabella
-
-        // Codice per il primo grafico (andamento della temperatura) qui...
-        var data = [{
-            x: orariData,
-            y: temperatureData,
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: 'Temperatura'
-        }];
-
-        var layout = {
-            title: 'Andamento della Temperatura - ' + sensor,
-            xaxis: { title: 'Orario' },
-            yaxis: { title: 'Temperatura (°C)' }
-        };
-
-        Plotly.newPlot('grafico-temperatura', data, layout);
-
-        // Codice per il secondo grafico (localizzazione) qui...
+        var AlarmsData = {{ AlarmsData|safe }};
         var lat = {{ lat }};
         var long = {{ long }};
-        var map = L.map('mappa').setView([lat, long], 13);
+        var map = L.map('map').setView([lat, long], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.marker([lat, long]).addTo(map).bindPopup("<h1>Unit {{sensor}}</h1><br>");
 
-        // Funzione per aggiornare la tabella con i dati da AlarmsData
+    // Update alarms table
+
         function updateTable() {
             var table = document.getElementById("tabella");
 
@@ -114,7 +205,7 @@
                 table.deleteRow(1);
             }
 
-            // Aggiungi le nuove righe in base ai dati in AlarmsData
+            // Add the new rows from AlarmsData variable
             for (var i = 0; i < AlarmsData.length; i++) {
                 var rowData = AlarmsData[i];
                 var row = table.insertRow(-1);
@@ -126,22 +217,47 @@
                 locationCell.innerHTML = rowData.Location;
                 var tempValueCell = row.insertCell(3);
                 tempValueCell.innerHTML = rowData.TempValue;
-                var alarmModeCell = row.insertCell(4);
-                alarmModeCell.innerHTML = rowData.AlarmMode;
+                var openingValueCell = row.insertCell(4);
+                openingValueCell.innerHTML = rowData.Opening_time;
+                var alarmModeCell = row.insertCell(5);
+                alarmModeCell.innerHTML = rowData.Temp_alarm;
             }
         }
-
-        // Chiamare la funzione di aggiornamento della tabella inizialmente
         updateTable();
 
-        // Aggiorna la tabella ogni 5 secondi (come nel tuo codice originale)
         setTimeout(function(){
-            updateTable();
-            window.location.reload();
-        }, 5000);
+        window.location.reload();
+      }, 10000);
+
+
+
+      // Temperature graph with pyplot
+
+         var data = [{
+    x: orariData,
+    y: temperatureData,
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: 'Temperatura'
+    }];
+
+    var layout = {
+        title: 'Temperature evolution - ' + sensor,
+        xaxis: {
+            title: '{{current_date |safe}}',
+            tickvals: [], // Imposta un array vuoto per nascondere le etichette degli orari
+    },
+    yaxis: { title: 'Temperature (°C)' }
+    };
+
+    Plotly.newPlot('grafico-temperatura', data, layout);
+
     </script>
 </body>
+
 </html>
+
+
 
 
 

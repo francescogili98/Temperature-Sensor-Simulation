@@ -1,63 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>Login page</title>
-<style>
-body {
-            background-color: #333; /* Imposta il colore di sfondo a nero (#000) */
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+         @import url("https://fonts.googleapis.com/css2?family=Sriracha&display=swap");
+         form {
+            width: 400px;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-    h1 {
-        margin-left: 20px;
-        font-family: Arial, sans-serif;
-        color: #333;
-    }
 
-    form {
-        width: 400px;
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
+        input[type="text"],
+        input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-    input[type="text"],
-    input[type="password"] {
-        width: 80%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
 
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
+        body {
+             margin: 0;
+             box-sizing: border-box;
+        }
 
-    .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        padding: 10px 0; /* Aggiungi spazio intorno al testo del footer */
-    }
-</style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+
+        .header .logo {
+            font-size: 25px;
+            font-family: "Sriracha", cursive;
+            color: #000;
+            text-decoration: none;
+            margin-left: 30px;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #f5f5f5;
+            margin-right: 20px;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #000;
+            padding: 35px 20px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #302f49;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0; /* Aggiungi spazio intorno al testo del footer */
+        }
+
+
+        .footer .copy {
+            color: #fff;
+        }
+
+        .bottom-links {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .bottom-links .links {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .bottom-links .links span {
+            font-size: 20px;
+            color: #fff;
+            text-transform: uppercase;
+            margin: 10px 0;
+        }
+
+        .bottom-links .links a {
+            text-decoration: none;
+            color: #a1a1a1;
+            padding: 10px 20px;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Sign in to TempSens</h1>
-<form action="/login" method="post">
+    <header class="header">
+        <a href="#" class="logo">TempSens Solutions</a>
+        <nav class="nav-items">
+            <a href="#">Help</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Ottieni il valore del parametro 'next' dall'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const nextParam = urlParams.get("next");
+
+        // Imposta l'action della form con il valore di 'next'
+        const loginForm = document.querySelector("#login-form");
+        if (nextParam) {
+            loginForm.action = `/login?next=${nextParam}`;
+        }
+    });
+</script>
+
+<form id="login-form" method="post">
     <label for="username">Username: </label>
     <input type="text" name="username" required><br>
     <label for="password">Password: </label>
@@ -65,9 +151,21 @@ body {
     <input type="submit">
 </form>
 
-<div class="footer">
-  <p>SensTemp</p>
-</div>
+    <footer class="footer">
+        <div class="copy">© 2023 TempSens Solutions</div>
+        <div class="bottom-links">
+            <div class="links">
+                <span>More Info</span>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="links">
+                <span>Social Links</span>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
 </body>
-</html>
 
+</html>
