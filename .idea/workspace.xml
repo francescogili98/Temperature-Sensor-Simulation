@@ -2,20 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2ccd5aa-b1a3-429f-8510-db99a0efb145" name="Default Changelist" comment="truck page with footer and header">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sensors/sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS469.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sensors/sensor2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS479.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prova.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/adduser.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/adduser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/alarms.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/geo.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/graph.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/totalgraph.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +227,28 @@
       <option name="project" value="LOCAL" />
       <updated>1694550333779</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fix errors">
+      <created>1694612759433</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1694612759433</updated>
+    </task>
+    <task id="LOCAL-00017" summary="image added">
+      <created>1694612786167</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1694612786167</updated>
+    </task>
+    <task id="LOCAL-00018" summary="gitignore updated">
+      <created>1694612831521</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1694612831521</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -270,6 +279,9 @@
     <MESSAGE value="home page" />
     <MESSAGE value="truck page with footer and header" />
     <MESSAGE value="gcp tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="gcp tested" />
+    <MESSAGE value="fix errors" />
+    <MESSAGE value="image added" />
+    <MESSAGE value="gitignore updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore updated" />
   </component>
 </project>
