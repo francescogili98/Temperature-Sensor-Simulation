@@ -18,7 +18,6 @@
             box-sizing: border-box;
         }
 
-        /* CSS for header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -48,15 +47,14 @@
             padding: 35px 20px;
         }
 
-        /* CSS for footer */
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #302f49;
-            padding: 20px 80px; /* Riduci il padding del footer */
-            margin-top: 20px; /* Aggiungi spazio tra la tabella e il footer */
-        }
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #302f49;
+    padding: 10px 80px; /* Riduci il padding del footer solo sopra e sotto */
+    margin-top: 40px; /* Aggiungi spazio tra la tabella e il footer */
+}
 
 
         .footer .copy {
@@ -88,10 +86,9 @@
         .bottom-links .links a {
             text-decoration: none;
             color: #a1a1a1;
-            padding: 10px 20px;
+            padding: 5px 10px;
         }
 
-        /* CSS for the map */
         #map {
             max-width: 1150px;
             width: 105%;
@@ -99,15 +96,13 @@
             margin: 0 auto;
         }
 
-        /* CSS for the temperature graph */
-        #grafico-temperatura {
+        #temperature_graph {
             width: 90%;
             height: 500px;
             margin-top: 20px;
             margin: 0 auto;
         }
 
-        /* CSS for the table */
         #tabella-container {
             margin-top: 40px;
             text-align: center;
@@ -142,13 +137,13 @@
     <header class="header">
         <a href="#" class="logo">TempSens</a>
         <nav class="nav-items">
-            <a href="#">Login</a>
+            <a href="{{ url_for('static', filename='home.html') }}">Home</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
         </nav>
     </header>
     <!-- Temperature graph -->
-    <div id="grafico-temperatura"></div>
+    <div id="temperature_graph"></div>
     <!-- Geographical map -->
     <div id="map"></div>
     <!-- Table -->
@@ -169,7 +164,7 @@
         <div class="bottom-links">
             <div class="links">
                 <span>More Info</span>
-                <a href="#">Login</a>
+                <a href="{{ url_for('static', filename='home.html') }}">Home</a>
                 <a href="#">About</a>
                 <a href="#">Contact</a>
             </div>
@@ -184,7 +179,6 @@
 
     <!-- js code -->
     <script>
-        // Assicurati di avere la libreria Leaflet JavaScript inclusa
         var sensor = "{{ sensor }}";
         var temperatureData = {{ temperatureData|safe }};
         var orariData = {{ orariData|safe }};
@@ -231,26 +225,34 @@
 
 
 
-      // Temperature graph with pyplot
+    // Temperature graph with pyplot
 
-         var data = [{
-    x: orariData,
-    y: temperatureData,
-    type: 'scatter',
-    mode: 'lines+markers',
-    name: 'Temperatura'
-    }];
+        var data = [{
+            x: orariData,
+            y: temperatureData,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Temperature'
+        }];
 
-    var layout = {
-        title: 'Temperature evolution - ' + sensor,
-        xaxis: {
-            title: '{{current_date |safe}}',
-            tickvals: [], // Imposta un array vuoto per nascondere le etichette degli orari
-    },
-    yaxis: { title: 'Temperature (°C)' }
-    };
+        var tick_vals = [];
+        for (var i = 0; i < orariData.length; i++) {
+            if (i % 2 == 0) {
+                tick_vals.push(orariData[i]);
+                } else {
+                tick_vals.push(' ');
+            }
+        }
+        var layout = {
+            title: 'Temperature evolution - ' + sensor,
+            xaxis: {
+                title: '{{current_date |safe}}',
+                tickvals: tick_vals,
+            },
+            yaxis: { title: 'Temperature (°C)' }
+        };
 
-    Plotly.newPlot('grafico-temperatura', data, layout);
+        Plotly.newPlot('temperature_graph', data, layout);
 
     </script>
 </body>

@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template,redirect,url_for
+from flask import Flask, request, render_template, redirect, url_for
 import json
 from google.cloud import firestore
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required, UserMixin
@@ -8,7 +8,7 @@ import datetime
 
 app = Flask(__name__) # create flask application
 app.config['SECRET_KEY'] = secret_key
-local = True # False if deployment in gcp
+local = True    # False if deployment in GCP
 
 login = LoginManager(app)
 login.login_view = '/static/login.html' # If the application needs to request a login operation, it redirects to this html page
@@ -18,12 +18,14 @@ start_time = {}
 end_time = {}
 open = {}
 
+
 class User(UserMixin):
     def __init__(self, username):
         super().__init__()
         self.id = username
         self.username = username
         self.par = {}
+
 
 def timeDuration(timeS, timeF):
     date, time = timeS[0], timeS[1]
@@ -87,16 +89,15 @@ def load_user(username):
     return None
 
 
-@app.route('/sensors', methods=['GET'])#@login_required
+@app.route('/sensors', methods=['GET'])
 def main():
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
-    s = ['--']
+    s = ['open']
     for doc in db.collection('sensors').stream():   # sensors collection in firestore
         s.append(doc.id)
     return json.dumps(s), 200
 
 
-#@app.route('/main', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET'])
 def get_home():
@@ -172,33 +173,10 @@ def get_data(s):
     else:
         return redirect(url_for('static', filename='sensor404.html'))
 
-'''
-@app.route('/graph/<s>',methods=['GET'])
+
+@app.route('/graph/<s>', methods=['GET'])
 @login_required
 def graph_data(s):
-    # sono sempre i due possibili modi per accedere a firestore da locale o da remoto
-    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
-    entity = db.collection('sensors').document(s).get() #con get accedi veramente all'entità, non con doc ref
-    if entity.exists:
-        d = []
-        d.append(['Number', s])
-        t = 0
-        for x in entity.to_dict()['values']:
-            d.append([str(t), x['temp']])
-            t += 1
-            print(x['temp'])
-        return render_template('graph.html', sensor=s, data=json.dumps(d))
-        # gli passo una pagina html e dei parametri che userò nella pagina (quanti ne voglio, la pagina è quindi dinamica)
-        # gli puoi passare anche un dizionario come parametro e usare if/cicli for nell'html per leggerci i valori
-        # non è detto che devi restituire sempre una pagina html, magari il client è un'applicazione che gli bastano stringhe/dati json in risposta
-    else:
-        return redirect(url_for('static', filename='sensor404.html'))
-        # ridirige a url con pagina static
-'''
-
-@app.route('/graphh/<s>', methods=['GET'])
-@login_required
-def graphh_data(s):
     db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
     entity = db.collection('sensors').document(s).get()
     if entity.exists:
@@ -227,7 +205,7 @@ def graphh_data(s):
                      'TempValue': x['temp'], 'Opening_time': x['opening time']})
             alarms_data = alarms_data[-10:]
 
-        return render_template('totalgraph.html', sensor=s, temperatureData=json.dumps(temperature_data), orariData=json.dumps(orari_data), lat=lat, long=long, AlarmsData=json.dumps(alarms_data), current_date=current_date)
+        return render_template('dashboard.html', sensor=s, temperatureData=json.dumps(temperature_data), orariData=json.dumps(orari_data), lat=lat, long=long, AlarmsData=json.dumps(alarms_data), current_date=current_date)
 
     else:
         return redirect(url_for('static', filename='sensor404.html'))
@@ -279,7 +257,7 @@ def adduser():
             user.set({'username': username, 'password': password, 'email': email, 'firstname': firstname, 'lastname': lastname, 'country':country})
             return 'user registered'
     else:
-        return redirect('/')
+        return redirect('/static/home.html')
 
 
 if __name__ == '__main__':
