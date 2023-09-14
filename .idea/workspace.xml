@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2ccd5aa-b1a3-429f-8510-db99a0efb145" name="Default Changelist" comment="README.md updated">
-      <change afterPath="$PROJECT_DIR$/Sensors/MS470.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Temperature-Sensor-Simulation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Temperature-Sensor-Simulation.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Sensors/MS469.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS469.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sensors/MS470.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS470.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Sensors/MS479.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS479.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/adduser.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/adduser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/sensor404.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/sensor404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +45,7 @@
       <recent name="$PROJECT_DIR$/Sensors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.MS469">
+  <component name="RunManager" selected="Python.MS479">
     <configuration name="MS469" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Temperature-Sensor-Simulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -137,10 +132,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.MS469" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.MS479" />
         <item itemvalue="Python.MS470" />
+        <item itemvalue="Python.MS469" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -286,7 +281,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694614665959</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="variables consistency problem solved">
+      <created>1694717400787</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1694717400787</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -321,6 +323,7 @@
     <MESSAGE value="image added" />
     <MESSAGE value="gitignore updated" />
     <MESSAGE value="README.md updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="README.md updated" />
+    <MESSAGE value="variables consistency problem solved" />
+    <option name="LAST_COMMIT_MESSAGE" value="variables consistency problem solved" />
   </component>
 </project>

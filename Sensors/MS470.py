@@ -1,8 +1,8 @@
 from requests import get, post
 import time
 import pandas as pd
-#base_url = 'https://prova1-esame.lm.r.appspot.com'
-base_url = 'http://localhost:80'
+base_url = 'https://prova1-esame.lm.r.appspot.com'
+#base_url = 'http://localhost:80'
 
 sensor = 'MS470'
 data = pd.read_excel('/Users/gili98/Documents/Temperature-Sensor-Simulation/Data/Journey_MS-470.xlsx', header=12)

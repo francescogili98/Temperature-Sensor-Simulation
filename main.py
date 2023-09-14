@@ -8,15 +8,10 @@ import datetime
 
 app = Flask(__name__) # create flask application
 app.config['SECRET_KEY'] = secret_key
-local = True    # False if deployment in GCP
+local = False    # False if deployment in GCP
 
 login = LoginManager(app)
 login.login_view = '/static/login.html' # If the application needs to request a login operation, it redirects to this html page
-
-# dictionaries to calculate the door opening time (needed for alarms)
-#start_time = {}
-#end_time = {}
-#open = {}
 
 
 class User(UserMixin):
@@ -130,16 +125,13 @@ def add_data(s):
         doc_ref.update({'values': v}) # update values referred to sensor s
     else:   # in this case val is the first data point
         doc_ref.set({'values': [val]})
-    entity_data = doc_ref.get().to_dict().get('values')
-    if len(entity_data) > 0:
-        print('ok')
+
     open_door = doc_times.get().to_dict().get('values')
     if request.values['Door 1'] == 'Open' and open_door['open'] == 'False':
         diz = doc_times.get().to_dict().get('values')
         diz['start_time'] = [val['Date'], val['Time']]
         diz['open'] = 'True'
         doc_times.update({'values': diz})
-        #doc_times.set({'values': {'open': 'True'}})
 
         open_door = doc_times.get().to_dict().get('values')
     elif request.values['Door 1'] == 'Closed' and open_door['open'] == 'True':
@@ -150,13 +142,10 @@ def add_data(s):
         opening_duration = timeDuration(diz['start_time'], diz['end_time'])
         doc_times.update({'values': diz})
 
-        #doc_times.set({'values': {'opening_duration': timeDuration(entity_time.to_dict()['values']['start_time'], entity_time.to_dict()['values']['end_time'])}})
-        #print(start_time[s],'..',end_time[s])
         print('opening ',' ', s, ' ', opening_duration)
-        #doc_times.set({'values': {'open': 'False'}})
-    #opening_duration = entity_time.to_dict()['values']['opening_duration']
+
     if float(val['temp']) > float(request.values['maxTemp']) or opening_duration > float(request.values['maxDoor']):    # two possible alarm triggers
-        #temp_violation = True
+
         if opening_duration > float(request.values['maxDoor']) and float(val['temp']) > float(request.values['maxTemp']):
             temp_violation = '1'
         elif opening_duration > float(request.values['maxDoor']) and float(val['temp']) <= float(request.values['maxTemp']):
