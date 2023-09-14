@@ -131,11 +131,9 @@
     </header>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Ottieni il valore del parametro 'next' dall'URL
         const urlParams = new URLSearchParams(window.location.search);
         const nextParam = urlParams.get("next");
 
-        // Imposta l'action della form con il valore di 'next'
         const loginForm = document.querySelector("#login-form");
         if (nextParam) {
             loginForm.action = `/login?next=${nextParam}`;

@@ -47,14 +47,14 @@
             padding: 35px 20px;
         }
 
-.footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #302f49;
-    padding: 10px 80px; /* Riduci il padding del footer solo sopra e sotto */
-    margin-top: 40px; /* Aggiungi spazio tra la tabella e il footer */
-}
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #302f49;
+            padding: 10px 80px; /* Riduci il padding del footer solo sopra e sotto */
+            margin-top: 40px; /* Aggiungi spazio tra la tabella e il footer */
+        }
 
 
         .footer .copy {
@@ -92,8 +92,9 @@
         #map {
             max-width: 1150px;
             width: 105%;
-            height: 500px;
+            height: 450px;
             margin: 0 auto;
+            margin-top: 20px;
         }
 
         #temperature_graph {
@@ -185,16 +186,17 @@
         var AlarmsData = {{ AlarmsData|safe }};
         var lat = {{ lat }};
         var long = {{ long }};
-        var map = L.map('map').setView([lat, long], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([lat, long]).addTo(map).bindPopup("<h1>Unit {{sensor}}</h1><br>");
+
+    // Map
+    var map = L.map('map').setView([lat, long], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.marker([lat, long]).addTo(map).bindPopup("<h1>Unit {{sensor}}</h1><br>");
 
     // Update alarms table
 
         function updateTable() {
             var table = document.getElementById("tabella");
 
-            // Rimuovi tutte le righe precedenti
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
@@ -245,6 +247,9 @@
         }
         var layout = {
             title: 'Temperature evolution - ' + sensor,
+            font: {
+        size: 18,
+      },
             xaxis: {
                 title: '{{current_date |safe}}',
                 tickvals: tick_vals,

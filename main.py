@@ -14,9 +14,9 @@ login = LoginManager(app)
 login.login_view = '/static/login.html' # If the application needs to request a login operation, it redirects to this html page
 
 # dictionaries to calculate the door opening time (needed for alarms)
-start_time = {}
-end_time = {}
-open = {}
+#start_time = {}
+#end_time = {}
+#open = {}
 
 
 class User(UserMixin):
@@ -106,17 +106,22 @@ def get_home():
 # parameter 's' in the URL
 @app.route('/sensors/<s>', methods=['POST'])
 def add_data(s):
-    global open
-    global start_time
-    global end_time
-    if s not in open:
-        open[s] = False
+
+    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+
+    doc_times = db.collection('open_times').document(s)  # reference to document entity
+    entity_time = doc_times.get()  # got the real entity, not just the reference
+    if entity_time.exists and 'values' in entity_time.to_dict():
+        diz = entity_time.to_dict()['values']
+    else:
+        diz = {'open': 'False'}
+        doc_times.set({'values': diz})
+
     opening_duration = 0
 
     val = {'temp': float(request.values['Temp 1']), 'lat': float(request.values['Lat/Long'].split(',')[0]), 'long': float(request.values['Lat/Long'].split(',')[1]),
            'Date': request.values['Date'], 'Time': request.values['Time']}
-    print('misurazione,',val)
-    db = firestore.Client.from_service_account_json('credentials.json') if local else firestore.Client()
+
     doc_ref = db.collection('sensors').document(s)  # reference to document entity
     entity = doc_ref.get()  # got the real entity, not just the reference
     if entity.exists and 'values' in entity.to_dict():
@@ -125,19 +130,33 @@ def add_data(s):
         doc_ref.update({'values': v}) # update values referred to sensor s
     else:   # in this case val is the first data point
         doc_ref.set({'values': [val]})
+    entity_data = doc_ref.get().to_dict().get('values')
+    if len(entity_data) > 0:
+        print('ok')
+    open_door = doc_times.get().to_dict().get('values')
+    if request.values['Door 1'] == 'Open' and open_door['open'] == 'False':
+        diz = doc_times.get().to_dict().get('values')
+        diz['start_time'] = [val['Date'], val['Time']]
+        diz['open'] = 'True'
+        doc_times.update({'values': diz})
+        #doc_times.set({'values': {'open': 'True'}})
 
-    if request.values['Door 1'] == 'Open' and open[s] == False:
-        start_time[s] = [val['Date'], val['Time']]
-        open[s] = True
+        open_door = doc_times.get().to_dict().get('values')
+    elif request.values['Door 1'] == 'Closed' and open_door['open'] == 'True':
+        diz = doc_times.get().to_dict().get('values')
+        diz['end_time'] = [val['Date'], val['Time']]
+        diz['open'] = 'False'
+        diz['opening_duration'] = timeDuration(diz['start_time'], diz['end_time'])
+        opening_duration = timeDuration(diz['start_time'], diz['end_time'])
+        doc_times.update({'values': diz})
 
-    elif request.values['Door 1'] == 'Closed' and open[s] == True:
-        end_time[s] = [val['Date'], val['Time']]
-        opening_duration = timeDuration(start_time[s], end_time[s])
-        print('opening ', opening_duration)
-        open[s] = False
-
+        #doc_times.set({'values': {'opening_duration': timeDuration(entity_time.to_dict()['values']['start_time'], entity_time.to_dict()['values']['end_time'])}})
+        #print(start_time[s],'..',end_time[s])
+        print('opening ',' ', s, ' ', opening_duration)
+        #doc_times.set({'values': {'open': 'False'}})
+    #opening_duration = entity_time.to_dict()['values']['opening_duration']
     if float(val['temp']) > float(request.values['maxTemp']) or opening_duration > float(request.values['maxDoor']):    # two possible alarm triggers
-        temp_violation = True
+        #temp_violation = True
         if opening_duration > float(request.values['maxDoor']) and float(val['temp']) > float(request.values['maxTemp']):
             temp_violation = '1'
         elif opening_duration > float(request.values['maxDoor']) and float(val['temp']) <= float(request.values['maxTemp']):
@@ -153,7 +172,6 @@ def add_data(s):
         entity_2 = doc_ref_2.get()
         val_2 = {'date': request.values['Date'], 'time': request.values['Time'], 'temp': str(val['temp']),
                  'opening time': str(opening_duration), 'temp alarm': temp_violation, 'location': request.values['Location']}
-        print(val_2)
         if entity_2.exists and 'values' in entity_2.to_dict():
             v_2 = entity_2.to_dict()['values']
             v_2.append(val_2)
@@ -218,7 +236,7 @@ def login():
         if not next_page:
             next_page = '/home'
         return redirect(next_page)
-    print(request.args.get('next'))
+
     username = request.values['username']   # given by the form
     password = request.values['password']   # given by the form
 
