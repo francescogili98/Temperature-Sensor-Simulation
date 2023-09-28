@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b2ccd5aa-b1a3-429f-8510-db99a0efb145" name="Default Changelist" comment="README.md updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sensors/MS469.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS469.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Sensors/MS470.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS470.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sensors/MS479.py" beforeDir="false" afterPath="$PROJECT_DIR$/Sensors/MS479.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -288,7 +287,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694717400787</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="variables consistency problem solved 2">
+      <created>1694720169583</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1694720169583</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -324,6 +330,7 @@
     <MESSAGE value="gitignore updated" />
     <MESSAGE value="README.md updated" />
     <MESSAGE value="variables consistency problem solved" />
-    <option name="LAST_COMMIT_MESSAGE" value="variables consistency problem solved" />
+    <MESSAGE value="variables consistency problem solved 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="variables consistency problem solved 2" />
   </component>
 </project>

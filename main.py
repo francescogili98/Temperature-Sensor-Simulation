@@ -8,7 +8,7 @@ import datetime
 
 app = Flask(__name__) # create flask application
 app.config['SECRET_KEY'] = secret_key
-local = False    # False if deployment in GCP
+local = True    # False if deployment in GCP
 
 login = LoginManager(app)
 login.login_view = '/static/login.html' # If the application needs to request a login operation, it redirects to this html page
@@ -146,16 +146,16 @@ def add_data(s):
 
     if float(val['temp']) > float(request.values['maxTemp']) or opening_duration > float(request.values['maxDoor']):    # two possible alarm triggers
 
-        if opening_duration > float(request.values['maxDoor']) and float(val['temp']) > float(request.values['maxTemp']):
+        if opening_duration >= float(request.values['maxDoor']) and float(val['temp']) >= float(request.values['maxTemp']):
             temp_violation = '1'
-        elif opening_duration > float(request.values['maxDoor']) and float(val['temp']) <= float(request.values['maxTemp']):
+        elif opening_duration >= float(request.values['maxDoor']) and float(val['temp']) <= float(request.values['maxTemp']):
             temp_violation = '2'
-        elif opening_duration <= float(request.values['maxDoor']) and float(val['temp']) > float(request.values['maxTemp']):
+        elif opening_duration <= float(request.values['maxDoor']) and float(val['temp']) >= float(request.values['maxTemp']):
             temp_violation = '3'
             opening_duration = 'NaN'
-        else:
-            temp_violation = '4'
-            opening_duration = 'NaN'
+        #else:
+        #    temp_violation = '4'
+        #    opening_duration = 'NaN'
 
         doc_ref_2 = db.collection('alarms').document(s)
         entity_2 = doc_ref_2.get()
@@ -221,10 +221,7 @@ def graph_data(s):
 @app.route('/login', methods=['POST'])
 def login():
     if current_user.is_authenticated:
-        next_page = request.args.get('next')
-        if not next_page:
-            next_page = '/home'
-        return redirect(next_page)
+        return redirect('/home')
 
     username = request.values['username']   # given by the form
     password = request.values['password']   # given by the form

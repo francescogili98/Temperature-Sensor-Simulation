@@ -17,6 +17,6 @@ for i in range(150):
     data_to_send['maxDoor'] = 25
     print(data_to_send)
     r = post(f'{base_url}/sensors/{sensor}', data=data_to_send)
-    time.sleep(10)
+    time.sleep(8)
 
 print('done')
